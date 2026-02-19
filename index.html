@@ -10,64 +10,39 @@
     
     <style>
         body { 
-            margin: 0; 
-            padding: 0; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            min-height: 100vh; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            background-color: #fff; 
-            padding-top: 50px; 
+            margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; 
+            min-height: 100vh; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background-color: #fff; padding-top: 50px; 
         }
-        h1 { 
-            color: #E62411; 
-            font-weight: bold; 
-            font-size: 3rem; 
-            margin-bottom: 40px; 
-            text-align: center;
-        }
-        .search-container { 
-            width: 90%; 
-            max-width: 600px; 
-            text-align: center; 
-        }
+        h1 { color: #E62411; font-weight: bold; font-size: 3rem; margin-bottom: 40px; text-align: center;}
+        .search-container { width: 90%; max-width: 600px; text-align: center; }
         input { 
-            width: 100%; 
-            padding: 15px 25px; 
-            font-size: 1.2rem; 
-            border: 2px solid #dfe1e5; 
-            border-radius: 30px; 
-            outline: none; 
-            box-sizing: border-box; 
-            -webkit-appearance: none;
+            width: 100%; padding: 15px 25px; font-size: 1.2rem; border: 2px solid #dfe1e5; 
+            border-radius: 30px; outline: none; box-sizing: border-box; -webkit-appearance: none;
         }
-        input:focus { 
-            border-color: #E62411; 
-            box-shadow: 0 1px 6px rgba(0,0,0,0.1); 
+        input:focus { border-color: #E62411; box-shadow: 0 1px 6px rgba(0,0,0,0.1); }
+        
+        #status { margin-top: 20px; color: #777; font-style: italic; font-size: 0.9rem; }
+        
+        /* Email All Button Styling */
+        #emailAllBtn {
+            display: none;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.9rem;
         }
-        #status { 
-            margin-top: 20px; 
-            color: #777; 
-            font-style: italic; 
-            font-size: 0.9rem; 
-        }
-        #results { 
-            margin-top: 20px; 
-            width: 100%; 
-            text-align: left; 
-        }
-        .result-item { 
-            padding: 15px; 
-            border-bottom: 1px solid #eee; 
-            line-height: 1.6; 
-            color: #333; 
-            font-size: 1.1rem; 
-        }
-        /* Mobile adjustment */
-        @media (max-width: 600px) {
-            h1 { font-size: 2.2rem; margin-bottom: 20px; }
-        }
+        #emailAllBtn:active { background-color: #005a9e; }
+
+        #results { margin-top: 20px; width: 100%; text-align: left; }
+        .result-item { padding: 15px; border-bottom: 1px solid #eee; line-height: 1.6; color: #333; font-size: 1.1rem; }
+        
+        @media (max-width: 600px) { h1 { font-size: 2.2rem; margin-bottom: 20px; } }
     </style>
 </head>
 <body>
@@ -75,8 +50,9 @@
     <h1>FTS Directory</h1>
 
     <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Start typing to search..." autofocus>
+        <input type="text" id="searchInput" placeholder="Search names, depts, postcodes..." autofocus>
         <div id="status">Connecting to Database...</div>
+        <button id="emailAllBtn">📧 Email All Results</button>
         <div id="results"></div>
     </div>
 
@@ -87,8 +63,10 @@
         const input = document.getElementById('searchInput');
         const resultsDiv = document.getElementById('results');
         const statusDiv = document.getElementById('status');
+        const emailAllBtn = document.getElementById('emailAllBtn');
 
         let allData = [];
+        let currentEmails = []; // Stores emails found in current search
 
         function loadData() {
             const script = document.createElement('script');
@@ -101,13 +79,15 @@
                 allData = response.table.rows;
                 statusDiv.innerHTML = "Database Connected. Search ready.";
             } else {
-                statusDiv.innerHTML = "Connected, but no data found in sheet.";
+                statusDiv.innerHTML = "Connected, but no data found.";
             }
         };
 
         input.addEventListener('input', function() {
             const query = input.value.trim().toLowerCase();
             resultsDiv.innerHTML = "";
+            currentEmails = []; // Reset email list
+            emailAllBtn.style.display = "none";
 
             if (query.length < 2) {
                 statusDiv.innerHTML = "Enter at least 2 characters...";
@@ -131,18 +111,19 @@
                     const displayData = rowValues.filter(v => v.trim() !== "").map(item => {
                         const cleanItem = item.trim();
                         
-                        // 1. Check for Email
+                        // Email Detection
                         if (cleanItem.includes('@') && cleanItem.includes('.')) {
+                            currentEmails.push(cleanItem); // Add to "Email All" list
                             return `<a href="mailto:${cleanItem}" style="color: #0078d4; text-decoration: none; font-weight: bold;">${cleanItem}</a>`;
                         }
                         
-                        // 2. Check for UK Postcode (RegEx pattern)
+                        // Postcode Detection
                         const postcodePattern = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
                         if (postcodePattern.test(cleanItem)) {
                             return `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cleanItem)}" target="_blank" style="color: #28a745; text-decoration: none; font-weight: bold;">📍 ${cleanItem}</a>`;
                         }
                         
-                        // 3. Check for Phone Number
+                        // Phone Detection
                         const isPhone = /^[0-9\s\-\+\(\)]{7,20}$/.test(cleanItem);
                         if (isPhone) {
                             return `<a href="tel:${cleanItem.replace(/\s/g, '')}" style="color: #E62411; text-decoration: none; font-weight: bold;">${cleanItem}</a>`;
@@ -158,8 +139,23 @@
             if (foundCount > 0) {
                 statusDiv.innerHTML = `Found ${foundCount} result(s)`;
                 resultsDiv.innerHTML = html;
+                // Show button if emails were found
+                if (currentEmails.length > 0) {
+                    emailAllBtn.style.display = "inline-block";
+                    emailAllBtn.innerText = `📧 Email All (${currentEmails.length})`;
+                }
             } else {
                 statusDiv.innerHTML = "No matches found.";
+            }
+        });
+
+        // Email All Logic
+        emailAllBtn.addEventListener('click', () => {
+            if (currentEmails.length > 0) {
+                // Remove duplicates and join with semicolon
+                const uniqueEmails = [...new Set(currentEmails)];
+                const mailtoLink = `mailto:${uniqueEmails.join(';')}`;
+                window.location.href = mailtoLink;
             }
         });
 
