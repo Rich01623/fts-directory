@@ -2,210 +2,191 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Frost Haulage Directory</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="white-translucent">
     
     <style>
         :root {
             --fts-red: #E62411;
             --outlook-blue: #0078d4;
             --maps-green: #28a745;
-            /* MATCHING LOGO BACKGROUND */
             --bg-color: #ffffff; 
         }
 
         body { 
             margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; 
             min-height: 100vh; font-family: -apple-system, system-ui, sans-serif; 
-            background-color: var(--bg-color); padding-top: 30px; 
+            background-color: var(--bg-color); padding-top: 70px;
+            overflow-x: hidden;
         }
 
-        /* LOGO STYLING */
-        .logo-container {
-            width: 92%;
-            max-width: 300px;
-            margin-bottom: 25px;
-            text-align: center;
+        /* --- SIDEBAR MENU --- */
+        #sideMenu {
+            height: 100%; width: 0; position: fixed; z-index: 1000; top: 0; left: 0;
+            background-color: var(--fts-red);
+            overflow-x: hidden; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); padding-top: 60px;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.2);
         }
-        .logo-container img {
-            max-width: 100%;
-            height: auto;
-            max-height: 120px;
-            background-color: var(--bg-color);
+        #sideMenu a {
+            padding: 20px 25px; text-decoration: none; font-size: 1.1rem; color: white;
+            display: block; transition: 0.2s; border-bottom: 1px solid rgba(255,255,255,0.15);
+            font-weight: 500; white-space: nowrap;
+        }
+        #sideMenu a:active { background-color: rgba(0,0,0,0.1); }
+        
+        #menuBtn {
+            position: fixed; top: 15px; left: 15px; font-size: 24px; cursor: pointer;
+            z-index: 1001; background: white; border: 1px solid #eee; border-radius: 10px;
+            padding: 6px 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            color: var(--fts-red); -webkit-tap-highlight-color: transparent;
         }
 
-        .search-container { width: 92%; max-width: 500px; text-align: center; position: relative; }
+        #overlay {
+            display: none; position: fixed; width: 100%; height: 100%;
+            top: 0; left: 0; z-index: 999; background: rgba(0,0,0,0.4);
+        }
 
-        /* Search Input Styling */
+        /* --- UI ELEMENTS --- */
+        .logo-container { width: 90%; max-width: 280px; margin-bottom: 20px; text-align: center; }
+        .logo-container img { max-width: 100%; height: auto; max-height: 90px; }
+
+        .search-container { width: 92%; max-width: 500px; text-align: center; }
         .input-wrapper { position: relative; width: 100%; }
+        
         input { 
-            width: 100%; padding: 16px 50px 16px 25px; font-size: 1.1rem; border: 1px solid #dfe1e5; 
+            width: 100%; padding: 16px 50px 16px 20px; font-size: 1.1rem; border: 1px solid #ddd; 
             border-radius: 15px; outline: none; box-sizing: border-box; 
             box-shadow: 0 4px 12px rgba(0,0,0,0.05); -webkit-appearance: none;
         }
-        input:focus { border-color: var(--fts-red); }
-
-        /* Clear (X) Button */
+        
         #clearBtn {
             position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
-            background: #ccc; color: white; border: none; border-radius: 50%;
-            width: 24px; height: 24px; font-weight: bold; cursor: pointer; display: none;
+            background: #bbb; color: white; border: none; border-radius: 50%;
+            width: 26px; height: 26px; font-weight: bold; cursor: pointer; display: none;
         }
 
-        #status { margin-top: 15px; color: #666; font-style: italic; font-size: 0.85rem; }
-        
-        #emailAllBtn {
-            display: none; margin-top: 15px; padding: 12px 24px; 
-            background-color: var(--outlook-blue); color: white; border: none; 
-            border-radius: 10px; font-weight: 600; cursor: pointer; width: 100%;
-        }
+        #status { margin-top: 15px; color: #777; font-size: 0.85rem; font-weight: 500; }
+        #results { margin-top: 20px; width: 100%; padding-bottom: 40px; }
 
-        #results { margin-top: 20px; width: 100%; }
-
-        /* CONTACT CARD LOOK - Using light grey so they stand out on white background */
         .result-item { 
-            background: #f4f7f9; margin-bottom: 12px; padding: 20px; 
-            border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            background: #f8fafc; margin-bottom: 12px; padding: 20px; 
+            border-radius: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.04);
             line-height: 1.8; color: #333; font-size: 1.05rem;
-            border-left: 5px solid var(--fts-red);
-            text-align: left;
+            border-left: 6px solid var(--fts-red); text-align: left;
         }
-
-        .result-item a { text-decoration: none; display: inline-block; margin: 2px 0; }
-        
-        @media (max-width: 600px) { .logo-container img { max-height: 100px; } }
+        .result-item a { text-decoration: none; display: inline-block; }
     </style>
 </head>
 <body>
 
+    <button id="menuBtn" aria-label="Open Menu">☰</button>
+    <div id="sideMenu">
+        <div style="color: rgba(255,255,255,0.6); padding: 0 25px 15px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;">Operations</div>
+        <a href="https://telematics.webfleet.com/login" target="_blank">Webfleet</a>
+        <a href="https://alliance.palletforce.com/" target="_blank">PalletForce</a>
+        <a href="https://exchange.haulageexchange.co.uk/login" target="_blank">Haulage Exchange</a>
+        <a href="https://www.frost-transport.solutions/" target="_blank">Company Website</a>
+        <a href="javascript:void(0)" id="closeMenu" style="margin-top: 30px; border: none; color: rgba(255,255,255,0.5); font-size: 0.9rem;">✕ Close Menu</a>
+    </div>
+    <div id="overlay"></div>
+
     <div class="logo-container">
-        <img src="logo.png" alt="Frost Haulage Directory">
+        <img src="logo.png" alt="Frost Haulage">
     </div>
 
     <div class="search-container">
         <div class="input-wrapper">
-            <input type="text" id="searchInput" placeholder="Search business, names, postcodes..." autofocus>
+            <input type="text" id="searchInput" placeholder="Search names, postcodes..." autocomplete="off">
             <button id="clearBtn">✕</button>
         </div>
-        <div id="status">Connecting to Database...</div>
-        <button id="emailAllBtn">📧 Email All Results</button>
+        <div id="status">Initialising...</div>
         <div id="results"></div>
     </div>
 
     <script>
-        const SHEET_ID = '1WDctuQ1oragZhv6GfBCl56Wk6czlmtKD-KFDR6Bv0_g';
-        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:handleResponse`;
+        document.addEventListener("DOMContentLoaded", function() {
+            // --- MENU SELECTION ---
+            const mBtn = document.getElementById("menuBtn");
+            const sMenu = document.getElementById("sideMenu");
+            const ovr = document.getElementById("overlay");
+            const cMenu = document.getElementById("closeMenu");
 
-        const input = document.getElementById('searchInput');
-        const clearBtn = document.getElementById('clearBtn');
-        const resultsDiv = document.getElementById('results');
-        const statusDiv = document.getElementById('status');
-        const emailAllBtn = document.getElementById('emailAllBtn');
+            const toggle = (open) => {
+                sMenu.style.width = open ? "260px" : "0";
+                ovr.style.display = open ? "block" : "none";
+            };
 
-        let allData = [];
-        let currentEmails = [];
+            mBtn.onclick = () => toggle(true);
+            cMenu.onclick = () => toggle(false);
+            ovr.onclick = () => toggle(false);
 
-        function loadData() {
-            const script = document.createElement('script');
-            script.src = url;
-            document.body.appendChild(script);
-        }
+            // --- DATA SEARCH ---
+            const SHEET_ID = '1WDctuQ1oragZhv6GfBCl56Wk6czlmtKD-KFDR6Bv0_g';
+            const input = document.getElementById('searchInput');
+            const clearBtn = document.getElementById('clearBtn');
+            const resultsDiv = document.getElementById('results');
+            const statusDiv = document.getElementById('status');
+            let allData = [];
 
-        window.handleResponse = function(response) {
-            if (response && response.table && response.table.rows) {
-                allData = response.table.rows;
-                statusDiv.innerHTML = "Database Ready.";
-            } else {
-                statusDiv.innerHTML = "Connection error.";
-            }
-        };
+            window.handleResponse = function(response) {
+                if (response?.table?.rows) {
+                    allData = response.table.rows;
+                    statusDiv.innerHTML = "System Ready";
+                } else {
+                    statusDiv.innerHTML = "Error: Check connection";
+                }
+            };
 
-        clearBtn.addEventListener('click', () => {
-            input.value = '';
-            input.dispatchEvent(new Event('input'));
-            input.focus();
-        });
+            input.oninput = function() {
+                const query = input.value.trim().toLowerCase();
+                resultsDiv.innerHTML = "";
+                clearBtn.style.display = query.length > 0 ? "block" : "none";
 
-        input.addEventListener('input', function() {
-            const query = input.value.trim().toLowerCase();
-            resultsDiv.innerHTML = "";
-            currentEmails = [];
-            emailAllBtn.style.display = "none";
-            clearBtn.style.display = query.length > 0 ? "block" : "none";
+                if (query.length < 2) {
+                    statusDiv.innerHTML = "Type 2+ characters...";
+                    return;
+                }
 
-            if (query.length < 2) {
-                statusDiv.innerHTML = "Enter 2+ characters...";
-                return;
-            }
+                let foundCount = 0;
+                let html = '';
 
-            let foundCount = 0;
-            let html = '';
+                allData.forEach(row => {
+                    const vals = row.c.map(cell => cell?.f || cell?.v || "");
+                    const rowString = vals.join(" ").toLowerCase();
 
-            allData.forEach(row => {
-                const rowValues = row.c.map(cell => {
-                    if (!cell || cell.v === null || cell.v === undefined) return "";
-                    return cell.f ? cell.f.toString() : cell.v.toString();
+                    if (rowString.includes(query)) {
+                        foundCount++;
+                        const content = vals.filter(v => v.toString().trim() !== "").map(item => {
+                            const str = item.toString().trim();
+                            if (str.includes('@')) return `<a href="mailto:${str}" style="color:var(--outlook-blue);font-weight:bold;">✉️ ${str}</a>`;
+                            if (/^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i.test(str)) return `<a href="https://maps.apple.com/?q=${encodeURIComponent(str)}" target="_blank" style="color:var(--maps-green);font-weight:bold;">📍 ${str}</a>`;
+                            if (/^[0-9\s\-\+\(\)]{8,20}$/.test(str)) return `<a href="tel:${str.replace(/\s/g, '')}" style="color:var(--fts-red);font-weight:bold;">📞 ${str}</a>`;
+                            return `<span>${str}</span>`;
+                        }).join('<br>');
+                        html += `<div class="result-item">${content}</div>`;
+                    }
                 });
 
-                const rowString = rowValues.join(" ").toLowerCase();
-
-                if (rowString.includes(query)) {
-                    foundCount++;
-                    
-                    const displayData = rowValues.filter(v => v.trim() !== "").map(item => {
-                        const cleanItem = item.trim();
-                        
-                        // 1. Email Detection
-                        if (cleanItem.includes('@') && cleanItem.includes('.')) {
-                            currentEmails.push(cleanItem);
-                            return `<a href="mailto:${cleanItem}" style="color: var(--outlook-blue); font-weight: bold;">✉️ ${cleanItem}</a>`;
-                        }
-                        
-                        // 2. Postcode Detection
-                        const postcodePattern = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
-                        if (postcodePattern.test(cleanItem)) {
-                            return `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cleanItem)}" target="_blank" style="color: var(--maps-green); font-weight: bold;">📍 ${cleanItem}</a>`;
-                        }
-                        
-                        // 3. Phone Detection
-                        const isPhone = /^[0-9\s\-\+\(\)]{7,20}$/.test(cleanItem);
-                        if (isPhone) {
-                            return `<a href="tel:${cleanItem.replace(/\s/g, '')}" style="color: var(--fts-red); font-weight: bold;">📞 ${cleanItem}</a>`;
-                        }
-
-                        return `<span>${cleanItem}</span>`;
-                    }).join('<br>');
-
-                    html += `<div class="result-item">${displayData}</div>`;
-                }
-            });
-
-            if (foundCount > 0) {
-                statusDiv.innerHTML = `Found ${foundCount} result(s)`;
+                statusDiv.innerHTML = foundCount > 0 ? `${foundCount} Result(s)` : "No matches found";
                 resultsDiv.innerHTML = html;
-                if (currentEmails.length > 1) {
-                    emailAllBtn.style.display = "block";
-                    emailAllBtn.innerText = `📧 Email All (${currentEmails.length})`;
-                }
-            } else {
-                statusDiv.innerHTML = "No matches found.";
-            }
-        });
+            };
 
-        // Email All Logic
-        emailAllBtn.addEventListener('click', () => {
-            if (currentEmails.length > 0) {
-                const uniqueEmails = [...new Set(currentEmails)];
-                const mailtoLink = `mailto:${uniqueEmails.join(';')}`;
-                window.location.href = mailtoLink;
-            }
-        });
+            clearBtn.onclick = () => {
+                input.value = '';
+                resultsDiv.innerHTML = "";
+                clearBtn.style.display = "none";
+                statusDiv.innerHTML = "System Ready";
+                input.focus();
+            };
 
-        loadData();
+            // Load Data
+            const script = document.createElement('script');
+            script.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:handleResponse`;
+            document.body.appendChild(script);
+        });
     </script>
 </body>
 </html>
-
