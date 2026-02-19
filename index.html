@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FTS Directory</title>
+    <title>Frost Haulage Directory</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -13,12 +13,14 @@
             --fts-red: #E62411;
             --outlook-blue: #0078d4;
             --maps-green: #28a745;
+            /* MATCHING LOGO BACKGROUND */
+            --bg-color: #ffffff; 
         }
 
         body { 
             margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; 
             min-height: 100vh; font-family: -apple-system, system-ui, sans-serif; 
-            background-color: #f4f7f9; padding-top: 30px; 
+            background-color: var(--bg-color); padding-top: 30px; 
         }
 
         /* LOGO STYLING */
@@ -31,18 +33,22 @@
         .logo-container img {
             max-width: 100%;
             height: auto;
-            max-height: 120px; /* Adjust this to make your logo bigger/smaller */
+            max-height: 120px;
+            background-color: var(--bg-color);
         }
 
         .search-container { width: 92%; max-width: 500px; text-align: center; position: relative; }
 
+        /* Search Input Styling */
         .input-wrapper { position: relative; width: 100%; }
         input { 
-            width: 100%; padding: 16px 50px 16px 25px; font-size: 1.1rem; border: none; 
+            width: 100%; padding: 16px 50px 16px 25px; font-size: 1.1rem; border: 1px solid #dfe1e5; 
             border-radius: 15px; outline: none; box-sizing: border-box; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08); -webkit-appearance: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); -webkit-appearance: none;
         }
+        input:focus { border-color: var(--fts-red); }
 
+        /* Clear (X) Button */
         #clearBtn {
             position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
             background: #ccc; color: white; border: none; border-radius: 50%;
@@ -59,20 +65,24 @@
 
         #results { margin-top: 20px; width: 100%; }
 
+        /* CONTACT CARD LOOK - Using light grey so they stand out on white background */
         .result-item { 
-            background: white; margin-bottom: 12px; padding: 20px; 
+            background: #f4f7f9; margin-bottom: 12px; padding: 20px; 
             border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             line-height: 1.8; color: #333; font-size: 1.05rem;
             border-left: 5px solid var(--fts-red);
+            text-align: left;
         }
 
         .result-item a { text-decoration: none; display: inline-block; margin: 2px 0; }
+        
+        @media (max-width: 600px) { .logo-container img { max-height: 100px; } }
     </style>
 </head>
 <body>
 
     <div class="logo-container">
-        <img src="logo.png" alt="FTS Logo">
+        <img src="logo.png" alt="Frost Haulage Directory">
     </div>
 
     <div class="search-container">
@@ -80,7 +90,7 @@
             <input type="text" id="searchInput" placeholder="Search names, depts, postcodes..." autofocus>
             <button id="clearBtn">✕</button>
         </div>
-        <div id="status">Connecting...</div>
+        <div id="status">Connecting to Database...</div>
         <button id="emailAllBtn">📧 Email All Results</button>
         <div id="results"></div>
     </div>
@@ -148,16 +158,19 @@
                     const displayData = rowValues.filter(v => v.trim() !== "").map(item => {
                         const cleanItem = item.trim();
                         
+                        // 1. Email Detection
                         if (cleanItem.includes('@') && cleanItem.includes('.')) {
                             currentEmails.push(cleanItem);
                             return `<a href="mailto:${cleanItem}" style="color: var(--outlook-blue); font-weight: bold;">✉️ ${cleanItem}</a>`;
                         }
                         
+                        // 2. Postcode Detection
                         const postcodePattern = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
                         if (postcodePattern.test(cleanItem)) {
                             return `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cleanItem)}" target="_blank" style="color: var(--maps-green); font-weight: bold;">📍 ${cleanItem}</a>`;
                         }
                         
+                        // 3. Phone Detection
                         const isPhone = /^[0-9\s\-\+\(\)]{7,20}$/.test(cleanItem);
                         if (isPhone) {
                             return `<a href="tel:${cleanItem.replace(/\s/g, '')}" style="color: var(--fts-red); font-weight: bold;">📞 ${cleanItem}</a>`;
@@ -179,6 +192,15 @@
                 }
             } else {
                 statusDiv.innerHTML = "No matches found.";
+            }
+        });
+
+        // Email All Logic
+        emailAllBtn.addEventListener('click', () => {
+            if (currentEmails.length > 0) {
+                const uniqueEmails = [...new Set(currentEmails)];
+                const mailtoLink = `mailto:${uniqueEmails.join(';')}`;
+                window.location.href = mailtoLink;
             }
         });
 
