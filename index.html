@@ -5,188 +5,193 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Frost Haulage Directory</title>
     
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="white-translucent">
-    
     <style>
         :root {
             --fts-red: #E62411;
-            --outlook-blue: #0078d4;
             --maps-green: #28a745;
-            --bg-color: #ffffff; 
+            --outlook-blue: #0078d4;
         }
 
         body { 
-            margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; 
-            min-height: 100vh; font-family: -apple-system, system-ui, sans-serif; 
-            background-color: var(--bg-color); padding-top: 70px;
-            overflow-x: hidden;
+            margin: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; 
+            background: #ffffff; display: flex; flex-direction: column; align-items: center; 
+            padding-top: 80px; 
         }
 
-        /* --- SIDEBAR MENU --- */
+        /* --- SIDEBAR --- */
         #sideMenu {
-            height: 100%; width: 0; position: fixed; z-index: 1000; top: 0; left: 0;
-            background-color: var(--fts-red);
-            overflow-x: hidden; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); padding-top: 60px;
-            box-shadow: 5px 0 15px rgba(0,0,0,0.2);
+            height: 100%; width: 0; position: fixed; z-index: 2000;
+            top: 0; left: 0; background-color: var(--fts-red);
+            overflow-x: hidden; transition: 0.3s; padding-top: 60px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.2);
         }
-        #sideMenu a {
-            padding: 20px 25px; text-decoration: none; font-size: 1.1rem; color: white;
-            display: block; transition: 0.2s; border-bottom: 1px solid rgba(255,255,255,0.15);
-            font-weight: 500; white-space: nowrap;
-        }
-        #sideMenu a:active { background-color: rgba(0,0,0,0.1); }
         
+        #sideMenu a {
+            padding: 18px 25px; text-decoration: none; font-size: 19px; 
+            color: white !important; display: block; 
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-weight: bold;
+        }
+
         #menuBtn {
-            position: fixed; top: 15px; left: 15px; font-size: 24px; cursor: pointer;
-            z-index: 1001; background: white; border: 1px solid #eee; border-radius: 10px;
-            padding: 6px 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            color: var(--fts-red); -webkit-tap-highlight-color: transparent;
+            position: fixed; top: 15px; left: 15px; font-size: 26px; 
+            background: white; border: 1px solid #ddd; padding: 5px 15px; 
+            border-radius: 8px; cursor: pointer; z-index: 1001; color: var(--fts-red);
         }
 
-        #overlay {
-            display: none; position: fixed; width: 100%; height: 100%;
-            top: 0; left: 0; z-index: 999; background: rgba(0,0,0,0.4);
-        }
-
-        /* --- UI ELEMENTS --- */
-        .logo-container { width: 90%; max-width: 280px; margin-bottom: 20px; text-align: center; }
-        .logo-container img { max-width: 100%; height: auto; max-height: 90px; }
-
-        .search-container { width: 92%; max-width: 500px; text-align: center; }
-        .input-wrapper { position: relative; width: 100%; }
+        /* --- CONTENT --- */
+        .logo { max-width: 240px; margin-bottom: 25px; }
+        .search-box { width: 90%; max-width: 450px; text-align: center; }
         
         input { 
-            width: 100%; padding: 16px 50px 16px 20px; font-size: 1.1rem; border: 1px solid #ddd; 
-            border-radius: 15px; outline: none; box-sizing: border-box; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05); -webkit-appearance: none;
+            width: 100%; padding: 15px; font-size: 18px; 
+            border-radius: 12px; border: 1px solid #ccc; box-sizing: border-box;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); outline: none;
+            text-align: center;
+        }
+
+        .action-bar { 
+            width: 90%; max-width: 450px; margin: 15px 0; 
+            display: flex; flex-direction: column; align-items: center; gap: 12px;
         }
         
-        #clearBtn {
-            position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
-            background: #bbb; color: white; border: none; border-radius: 50%;
-            width: 26px; height: 26px; font-weight: bold; cursor: pointer; display: none;
-        }
+        #status { color: #888; font-size: 14px; font-style: italic; text-align: center; width: 100%; }
 
-        #status { margin-top: 15px; color: #777; font-size: 0.85rem; font-weight: 500; }
-        #results { margin-top: 20px; width: 100%; padding-bottom: 40px; }
+        #emailAllBtn {
+            display: none; background: var(--fts-red); color: white; border: none;
+            padding: 12px 25px; border-radius: 8px; font-size: 14px;
+            cursor: pointer; font-weight: bold; text-transform: uppercase;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
 
         .result-item { 
-            background: #f8fafc; margin-bottom: 12px; padding: 20px; 
-            border-radius: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-            line-height: 1.8; color: #333; font-size: 1.05rem;
+            width: 90%; max-width: 450px; background: #f4f4f4; 
+            margin-bottom: 12px; padding: 18px; border-radius: 12px; 
             border-left: 6px solid var(--fts-red); text-align: left;
+            line-height: 1.7; box-sizing: border-box;
         }
-        .result-item a { text-decoration: none; display: inline-block; }
+        .result-item a { text-decoration: none; display: inline-block; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <button id="menuBtn" aria-label="Open Menu">☰</button>
+    <div id="menuBtn" onclick="openNav()">☰</div>
+
     <div id="sideMenu">
-        <div style="color: rgba(255,255,255,0.6); padding: 0 25px 15px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;">Operations</div>
-        <a href="https://telematics.webfleet.com/login" target="_blank">Webfleet</a>
-        <a href="https://alliance.palletforce.com/" target="_blank">PalletForce</a>
-        <a href="https://exchange.haulageexchange.co.uk/login" target="_blank">Haulage Exchange</a>
-        <a href="https://www.frost-transport.solutions/" target="_blank">Company Website</a>
-        <a href="javascript:void(0)" id="closeMenu" style="margin-top: 30px; border: none; color: rgba(255,255,255,0.5); font-size: 0.9rem;">✕ Close Menu</a>
-    </div>
-    <div id="overlay"></div>
-
-    <div class="logo-container">
-        <img src="logo.png" alt="Frost Haulage">
+        <div style="padding: 10px 25px; color: rgba(255,255,255,0.6); font-size: 12px; text-transform: uppercase;">Company Portals</div>
+        <a href="https://telematics.webfleet.com/login" target="_blank" rel="noopener">Webfleet</a>
+        <a href="https://alliance.palletforce.com/" target="_blank" rel="noopener">PalletForce</a>
+        <a href="https://exchange.haulageexchange.co.uk/login" target="_blank" rel="noopener">Haulage Exchange</a>
+        <a href="https://www.frost-transport.solutions/" target="_blank" rel="noopener">Company Website</a>
+        <div onclick="closeNav()" style="padding: 30px 25px; color: rgba(255,255,255,0.4); cursor: pointer; font-size: 16px;">✕ Close Menu</div>
     </div>
 
-    <div class="search-container">
-        <div class="input-wrapper">
-            <input type="text" id="searchInput" placeholder="Search names, postcodes..." autocomplete="off">
-            <button id="clearBtn">✕</button>
-        </div>
-        <div id="status">Initialising...</div>
-        <div id="results"></div>
+    <img src="logo.png" class="logo" alt="Frost Haulage">
+    
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search Directory..." autocomplete="off" oninput="doSearch()">
     </div>
+    
+    <div class="action-bar">
+        <div id="status">Connecting...</div>
+        <button id="emailAllBtn" onclick="emailResults()">Email All</button>
+    </div>
+
+    <div id="results"></div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // --- MENU SELECTION ---
-            const mBtn = document.getElementById("menuBtn");
-            const sMenu = document.getElementById("sideMenu");
-            const ovr = document.getElementById("overlay");
-            const cMenu = document.getElementById("closeMenu");
+        // SIDEBAR FUNCTIONS
+        function openNav() { document.getElementById("sideMenu").style.width = "280px"; }
+        function closeNav() { document.getElementById("sideMenu").style.width = "0"; }
 
-            const toggle = (open) => {
-                sMenu.style.width = open ? "260px" : "0";
-                ovr.style.display = open ? "block" : "none";
-            };
+        const SHEET_ID = '1WDctuQ1oragZhv6GfBCl56Wk6czlmtKD-KFDR6Bv0_g';
+        let allData = [];
+        let currentFilteredData = "";
 
-            mBtn.onclick = () => toggle(true);
-            cMenu.onclick = () => toggle(false);
-            ovr.onclick = () => toggle(false);
+        // DATA HANDLER
+        window.handleResponse = function(response) {
+            if(response && response.table) {
+                allData = response.table.rows;
+                document.getElementById('status').innerHTML = "System Ready";
+            }
+        };
 
-            // --- DATA SEARCH ---
-            const SHEET_ID = '1WDctuQ1oragZhv6GfBCl56Wk6czlmtKD-KFDR6Bv0_g';
-            const input = document.getElementById('searchInput');
-            const clearBtn = document.getElementById('clearBtn');
+        // SEARCH FUNCTION
+        function doSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
             const resultsDiv = document.getElementById('results');
-            const statusDiv = document.getElementById('status');
-            let allData = [];
+            const emailBtn = document.getElementById('emailAllBtn');
+            resultsDiv.innerHTML = "";
+            currentFilteredData = "";
+            
+            if (query.length < 2) {
+                emailBtn.style.display = "none";
+                document.getElementById('status').innerHTML = "System Ready";
+                return;
+            }
 
-            window.handleResponse = function(response) {
-                if (response?.table?.rows) {
-                    allData = response.table.rows;
-                    statusDiv.innerHTML = "System Ready";
-                } else {
-                    statusDiv.innerHTML = "Error: Check connection";
+            let foundCount = 0;
+            let emailText = "Frost Haulage Search Results:\n\n";
+
+            allData.forEach(row => {
+                const cells = row.c.map(c => c ? (c.f || c.v || "").toString() : "");
+                const rowText = cells.join(" ").toLowerCase();
+
+                if (rowText.includes(query)) {
+                    foundCount++;
+                    const div = document.createElement('div');
+                    div.className = "result-item";
+                    
+                    const rowContent = cells.filter(t => t.trim() !== "");
+                    emailText += rowContent.join(" | ") + "\n\n";
+
+                    div.innerHTML = rowContent.map(text => {
+                        const clean = text.trim();
+                        
+                        // 1. Email Recognition
+                        if (clean.includes('@')) {
+                            return `<a href="mailto:${clean}" style="color:var(--outlook-blue);">✉️ ${clean}</a>`;
+                        }
+                        
+                        // 2. Postcode Recognition -> Google Maps (Green)
+                        const pcRegex = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
+                        if (pcRegex.test(clean)) {
+                            return `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(clean)}" target="_blank" style="color:var(--maps-green);">📍 ${clean}</a>`;
+                        }
+                        
+                        // 3. Phone Recognition
+                        if (clean.length > 8 && /^[0-9+\s()/-]+$/.test(clean)) {
+                            return `<a href="tel:${clean.replace(/\s/g, '')}" style="color:var(--fts-red);">📞 ${clean}</a>`;
+                        }
+                        
+                        return `<span>${clean}</span>`;
+                    }).join('<br>');
+                    
+                    resultsDiv.appendChild(div);
                 }
-            };
+            });
 
-            input.oninput = function() {
-                const query = input.value.trim().toLowerCase();
-                resultsDiv.innerHTML = "";
-                clearBtn.style.display = query.length > 0 ? "block" : "none";
+            if (foundCount > 0) {
+                document.getElementById('status').innerHTML = foundCount + " match(es) found";
+                emailBtn.style.display = "block";
+                currentFilteredData = emailText;
+            } else {
+                document.getElementById('status').innerHTML = "No matches found";
+                emailBtn.style.display = "none";
+            }
+        }
 
-                if (query.length < 2) {
-                    statusDiv.innerHTML = "Type 2+ characters...";
-                    return;
-                }
+        function emailResults() {
+            const subject = "Frost Haulage Directory Search Results";
+            const body = encodeURIComponent(currentFilteredData);
+            window.location.href = `mailto:?subject=${subject}&body=${body}`;
+        }
 
-                let foundCount = 0;
-                let html = '';
-
-                allData.forEach(row => {
-                    const vals = row.c.map(cell => cell?.f || cell?.v || "");
-                    const rowString = vals.join(" ").toLowerCase();
-
-                    if (rowString.includes(query)) {
-                        foundCount++;
-                        const content = vals.filter(v => v.toString().trim() !== "").map(item => {
-                            const str = item.toString().trim();
-                            if (str.includes('@')) return `<a href="mailto:${str}" style="color:var(--outlook-blue);font-weight:bold;">✉️ ${str}</a>`;
-                            if (/^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i.test(str)) return `<a href="https://maps.apple.com/?q=${encodeURIComponent(str)}" target="_blank" style="color:var(--maps-green);font-weight:bold;">📍 ${str}</a>`;
-                            if (/^[0-9\s\-\+\(\)]{8,20}$/.test(str)) return `<a href="tel:${str.replace(/\s/g, '')}" style="color:var(--fts-red);font-weight:bold;">📞 ${str}</a>`;
-                            return `<span>${str}</span>`;
-                        }).join('<br>');
-                        html += `<div class="result-item">${content}</div>`;
-                    }
-                });
-
-                statusDiv.innerHTML = foundCount > 0 ? `${foundCount} Result(s)` : "No matches found";
-                resultsDiv.innerHTML = html;
-            };
-
-            clearBtn.onclick = () => {
-                input.value = '';
-                resultsDiv.innerHTML = "";
-                clearBtn.style.display = "none";
-                statusDiv.innerHTML = "System Ready";
-                input.focus();
-            };
-
-            // Load Data
-            const script = document.createElement('script');
-            script.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:handleResponse`;
-            document.body.appendChild(script);
-        });
+        // INITIALIZE DATA CONNECTION
+        const script = document.createElement('script');
+        script.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:handleResponse`;
+        document.body.appendChild(script);
     </script>
+
 </body>
 </html>
