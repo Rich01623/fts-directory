@@ -83,7 +83,7 @@
         <a href="https://alliance.palletforce.com/" target="_blank" rel="noopener">PalletForce</a>
         <a href="https://exchange.haulageexchange.co.uk/login" target="_blank" rel="noopener">Haulage Exchange</a>
         <a href="https://www.frost-transport.solutions/" target="_blank" rel="noopener">Company Website</a>
-        <div onclick="closeNav()" style="padding: 30px 25px; color: rgba(255,255,255,0.4); cursor: pointer; font-size: 16px;">✕ Close Menu</div>
+        <div onclick="closeNav()" style="padding: 30px 25px; color: rgba(0,0,0,0.4); cursor: pointer; font-size: 16px;">✕ Close Menu</div>
     </div>
 
     <img src="logo.png" class="logo" alt="Frost Haulage">
@@ -94,21 +94,19 @@
     
     <div class="action-bar">
         <div id="status">Connecting...</div>
-        <button id="emailAllBtn" onclick="emailResults()">Email All</button>
+        <button id="emailAllBtn" onclick="emailResults()">Email All Results</button>
     </div>
 
     <div id="results"></div>
 
     <script>
-        // SIDEBAR FUNCTIONS
         function openNav() { document.getElementById("sideMenu").style.width = "280px"; }
         function closeNav() { document.getElementById("sideMenu").style.width = "0"; }
 
         const SHEET_ID = '1WDctuQ1oragZhv6GfBCl56Wk6czlmtKD-KFDR6Bv0_g';
         let allData = [];
-        let currentFilteredData = "";
+        let currentEmailList = [];
 
-        // DATA HANDLER
         window.handleResponse = function(response) {
             if(response && response.table) {
                 allData = response.table.rows;
@@ -116,13 +114,12 @@
             }
         };
 
-        // SEARCH FUNCTION
         function doSearch() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const resultsDiv = document.getElementById('results');
             const emailBtn = document.getElementById('emailAllBtn');
             resultsDiv.innerHTML = "";
-            currentFilteredData = "";
+            currentEmailList = [];
             
             if (query.length < 2) {
                 emailBtn.style.display = "none";
@@ -131,7 +128,6 @@
             }
 
             let foundCount = 0;
-            let emailText = "Frost Haulage Search Results:\n\n";
 
             allData.forEach(row => {
                 const cells = row.c.map(c => c ? (c.f || c.v || "").toString() : "");
@@ -143,23 +139,25 @@
                     div.className = "result-item";
                     
                     const rowContent = cells.filter(t => t.trim() !== "");
-                    emailText += rowContent.join(" | ") + "\n\n";
 
                     div.innerHTML = rowContent.map(text => {
                         const clean = text.trim();
                         
-                        // 1. Email Recognition
+                        // Email Logic & Collection
                         if (clean.includes('@')) {
+                            if (!currentEmailList.includes(clean)) {
+                                currentEmailList.push(clean);
+                            }
                             return `<a href="mailto:${clean}" style="color:var(--outlook-blue);">✉️ ${clean}</a>`;
                         }
                         
-                        // 2. Postcode Recognition -> Google Maps (Green)
+                        // Postcode Logic (Google Maps)
                         const pcRegex = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
                         if (pcRegex.test(clean)) {
                             return `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(clean)}" target="_blank" style="color:var(--maps-green);">📍 ${clean}</a>`;
                         }
                         
-                        // 3. Phone Recognition
+                        // Phone Logic
                         if (clean.length > 8 && /^[0-9+\s()/-]+$/.test(clean)) {
                             return `<a href="tel:${clean.replace(/\s/g, '')}" style="color:var(--fts-red);">📞 ${clean}</a>`;
                         }
@@ -173,8 +171,8 @@
 
             if (foundCount > 0) {
                 document.getElementById('status').innerHTML = foundCount + " match(es) found";
-                emailBtn.style.display = "block";
-                currentFilteredData = emailText;
+                // Only show the button if at least one result has an email address
+                emailBtn.style.display = currentEmailList.length > 0 ? "block" : "none";
             } else {
                 document.getElementById('status').innerHTML = "No matches found";
                 emailBtn.style.display = "none";
@@ -182,12 +180,12 @@
         }
 
         function emailResults() {
-            const subject = "Frost Haulage Directory Search Results";
-            const body = encodeURIComponent(currentFilteredData);
-            window.location.href = `mailto:?subject=${subject}&body=${body}`;
+            if (currentEmailList.length === 0) return;
+            // Joins all emails with a semicolon (standard for Outlook/Mail)
+            const recipients = currentEmailList.join(';');
+            window.location.href = `mailto:${recipients}?subject=Frost Haulage Correspondence`;
         }
 
-        // INITIALIZE DATA CONNECTION
         const script = document.createElement('script');
         script.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:handleResponse`;
         document.body.appendChild(script);
