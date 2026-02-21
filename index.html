@@ -20,26 +20,25 @@
 
         /* --- SIDEBAR --- */
         #sideMenu {
-            height: 100%; width: 0; position: fixed; z-index: 2000;
+            height: 100%; width: 0; position: fixed; z-index: 9999;
             top: 0; left: 0; background-color: var(--fts-red);
-            overflow-x: hidden; transition: 0.3s; padding-top: 60px;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+            overflow-x: hidden; transition: 0.4s; padding-top: 60px;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.3);
         }
         
         #sideMenu a {
-            padding: 18px 25px; text-decoration: none; font-size: 19px; 
+            padding: 20px 25px; text-decoration: none; font-size: 19px; 
             color: white !important; display: block; 
             border-bottom: 1px solid rgba(255,255,255,0.1);
             font-weight: bold;
         }
 
         #menuBtn {
-            position: fixed; top: 15px; left: 15px; font-size: 26px; 
+            position: fixed; top: 15px; left: 15px; font-size: 28px; 
             background: white; border: 1px solid #ddd; padding: 5px 15px; 
             border-radius: 8px; cursor: pointer; z-index: 1001; color: var(--fts-red);
         }
 
-        /* --- CONTENT --- */
         .logo { max-width: 240px; margin-bottom: 25px; }
         .search-box { width: 90%; max-width: 450px; text-align: center; }
         
@@ -50,27 +49,21 @@
             text-align: center;
         }
 
-        .action-bar { 
-            width: 90%; max-width: 450px; margin: 15px 0; 
-            display: flex; flex-direction: column; align-items: center; gap: 12px;
-        }
-        
-        #status { color: #888; font-size: 14px; font-style: italic; text-align: center; width: 100%; }
+        #status { color: #888; font-size: 14px; font-style: italic; margin-top: 10px; }
 
         #emailAllBtn {
             display: none; background: var(--fts-red); color: white; border: none;
-            padding: 12px 25px; border-radius: 8px; font-size: 14px;
+            padding: 12px 25px; border-radius: 8px; font-size: 14px; margin-top: 10px;
             cursor: pointer; font-weight: bold; text-transform: uppercase;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .result-item { 
             width: 90%; max-width: 450px; background: #f4f4f4; 
-            margin-bottom: 12px; padding: 18px; border-radius: 12px; 
+            margin-top: 12px; padding: 18px; border-radius: 12px; 
             border-left: 6px solid var(--fts-red); text-align: left;
             line-height: 1.7; box-sizing: border-box;
         }
-        .result-item a { text-decoration: none; display: inline-block; font-weight: bold; }
+        .result-item a { text-decoration: underline; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -78,21 +71,22 @@
     <div id="menuBtn" onclick="openNav()">☰</div>
 
     <div id="sideMenu">
-        <div style="padding: 10px 25px; color: rgba(255,255,255,0.6); font-size: 12px; text-transform: uppercase;">Company Portals</div>
-        <a href="https://telematics.webfleet.com/login" target="_blank" rel="noopener">Webfleet</a>
-        <a href="https://alliance.palletforce.com/" target="_blank" rel="noopener">PalletForce</a>
-        <a href="https://exchange.haulageexchange.co.uk/login" target="_blank" rel="noopener">Haulage Exchange</a>
-        <a href="https://www.frost-transport.solutions/" target="_blank" rel="noopener">Company Website</a>
-        <div onclick="closeNav()" style="padding: 30px 25px; color: rgba(0,0,0,0.4); cursor: pointer; font-size: 16px;">✕ Close Menu</div>
+        <div style="padding: 10px 25px; color: rgba(255,255,255,0.6); font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Company Portals</div>
+        
+        <a href="https://docs.google.com/spreadsheets/d/YOUR_RATE_CARD_ID_HERE/preview" target="_blank">Rate Card</a>
+        
+        <a href="https://www.webfleet.com/en_gb/webfleet/products/webfleet/" target="_blank">Webfleet Login</a>
+        <a href="https://palletforce.net/Login.aspx" target="_blank">PalletForce</a>
+        <a href="https://haulageexchange.co.uk/" target="_blank">Haulage Exchange</a>
+        <a href="https://www.frosttransportsolutions.co.uk/" target="_blank">Company Website</a>
+        
+        <div onclick="closeNav()" style="padding: 30px 25px; color: white; cursor: pointer; font-size: 16px; text-decoration: underline; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 10px;">✕ Close Menu</div>
     </div>
 
     <img src="logo.png" class="logo" alt="Frost Haulage">
     
     <div class="search-box">
         <input type="text" id="searchInput" placeholder="Search Directory..." autocomplete="off" oninput="doSearch()">
-    </div>
-    
-    <div class="action-bar">
         <div id="status">Connecting...</div>
         <button id="emailAllBtn" onclick="emailResults()">Email All Results</button>
     </div>
@@ -104,8 +98,8 @@
         function closeNav() { document.getElementById("sideMenu").style.width = "0"; }
 
         const SHEET_ID = '1WDctuQ1oragZhv6GfBCl56Wk6czlmtKD-KFDR6Bv0_g';
-        let allData = [];
-        let currentEmailList = [];
+        var allData = [];
+        var currentEmailList = [];
 
         window.handleResponse = function(response) {
             if(response && response.table) {
@@ -115,79 +109,70 @@
         };
 
         function doSearch() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const resultsDiv = document.getElementById('results');
-            const emailBtn = document.getElementById('emailAllBtn');
+            var query = document.getElementById('searchInput').value.toLowerCase();
+            var resultsDiv = document.getElementById('results');
+            var emailBtn = document.getElementById('emailAllBtn');
+            var statusDiv = document.getElementById('status');
+            
             resultsDiv.innerHTML = "";
             currentEmailList = [];
             
             if (query.length < 2) {
                 emailBtn.style.display = "none";
-                document.getElementById('status').innerHTML = "System Ready";
+                statusDiv.innerHTML = "System Ready";
                 return;
             }
 
-            let foundCount = 0;
+            var foundCount = 0;
+            for (var i = 0; i < allData.length; i++) {
+                var row = allData[i];
+                if (!row.c) continue;
+                
+                var cells = [];
+                for (var j = 0; j < row.c.length; j++) {
+                    var val = (row.c[j] && (row.c[j].f || row.c[j].v)) ? row.c[j].f || row.c[j].v : "";
+                    cells.push(val.toString());
+                }
+                
+                var rowText = cells.join(" ").toLowerCase();
 
-            allData.forEach(row => {
-                const cells = row.c.map(c => c ? (c.f || c.v || "").toString() : "");
-                const rowText = cells.join(" ").toLowerCase();
-
-                if (rowText.includes(query)) {
+                if (rowText.indexOf(query) > -1) {
                     foundCount++;
-                    const div = document.createElement('div');
+                    var div = document.createElement('div');
                     div.className = "result-item";
                     
-                    const rowContent = cells.filter(t => t.trim() !== "");
+                    var htmlContent = "";
+                    for (var k = 0; k < cells.length; k++) {
+                        var clean = cells[k].trim();
+                        if (!clean) continue;
 
-                    div.innerHTML = rowContent.map(text => {
-                        const clean = text.trim();
-                        
-                        // Email Logic & Collection
-                        if (clean.includes('@')) {
-                            if (!currentEmailList.includes(clean)) {
-                                currentEmailList.push(clean);
-                            }
-                            return `<a href="mailto:${clean}" style="color:var(--outlook-blue);">✉️ ${clean}</a>`;
+                        if (clean.indexOf('@') > -1) {
+                            if (currentEmailList.indexOf(clean) === -1) currentEmailList.push(clean);
+                            htmlContent += '<a href="mailto:' + clean + '" style="color:var(--outlook-blue);">✉️ ' + clean + '</a><br>';
+                        } else if (/^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i.test(clean)) {
+                            htmlContent += '<a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(clean) + '" target="_blank" style="color:var(--maps-green);">📍 ' + clean + '</a><br>';
+                        } else if (clean.length > 8 && /^[0-9+\s()/-]+$/.test(clean)) {
+                            htmlContent += '<a href="tel:' + clean.replace(/\s+/g, '') + '" style="color:var(--fts-red);">📞 ' + clean + '</a><br>';
+                        } else {
+                            htmlContent += '<span>' + clean + '</span><br>';
                         }
-                        
-                        // Postcode Logic (Google Maps)
-                        const pcRegex = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
-                        if (pcRegex.test(clean)) {
-                            return `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(clean)}" target="_blank" style="color:var(--maps-green);">📍 ${clean}</a>`;
-                        }
-                        
-                        // Phone Logic
-                        if (clean.length > 8 && /^[0-9+\s()/-]+$/.test(clean)) {
-                            return `<a href="tel:${clean.replace(/\s/g, '')}" style="color:var(--fts-red);">📞 ${clean}</a>`;
-                        }
-                        
-                        return `<span>${clean}</span>`;
-                    }).join('<br>');
-                    
+                    }
+                    div.innerHTML = htmlContent;
                     resultsDiv.appendChild(div);
                 }
-            });
-
-            if (foundCount > 0) {
-                document.getElementById('status').innerHTML = foundCount + " match(es) found";
-                // Only show the button if at least one result has an email address
-                emailBtn.style.display = currentEmailList.length > 0 ? "block" : "none";
-            } else {
-                document.getElementById('status').innerHTML = "No matches found";
-                emailBtn.style.display = "none";
             }
+            
+            statusDiv.innerHTML = foundCount > 0 ? foundCount + " match(es) found" : "No matches found";
+            emailBtn.style.display = (foundCount > 0 && currentEmailList.length > 0) ? "block" : "none";
         }
 
         function emailResults() {
             if (currentEmailList.length === 0) return;
-            // Joins all emails with a semicolon (standard for Outlook/Mail)
-            const recipients = currentEmailList.join(';');
-            window.location.href = `mailto:${recipients}?subject=Frost Haulage Correspondence`;
+            window.location.href = "mailto:" + currentEmailList.join(';') + "?subject=Frost Haulage Correspondence";
         }
 
-        const script = document.createElement('script');
-        script.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:handleResponse`;
+        var script = document.createElement('script');
+        script.src = "https://docs.google.com/spreadsheets/d/" + SHEET_ID + "/gviz/tq?tqx=responseHandler:handleResponse";
         document.body.appendChild(script);
     </script>
 
