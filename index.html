@@ -4,66 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Frost Haulage Directory</title>
-    
     <style>
-        :root {
-            --fts-red: #E62411;
-            --maps-green: #28a745;
-            --outlook-blue: #0078d4;
-        }
-
-        body { 
-            margin: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; 
-            background: #ffffff; display: flex; flex-direction: column; align-items: center; 
-            padding-top: 80px; 
-        }
-
-        /* --- SIDEBAR --- */
-        #sideMenu {
-            height: 100%; width: 0; position: fixed; z-index: 9999;
-            top: 0; left: 0; background-color: var(--fts-red);
-            overflow-x: hidden; transition: 0.4s; padding-top: 60px;
-            box-shadow: 5px 0 15px rgba(0,0,0,0.3);
-        }
+        :root { --fts-red: #E62411; --maps-green: #28a745; --outlook-blue: #0078d4; }
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #ffffff; display: flex; flex-direction: column; align-items: center; padding-top: 70px; }
         
-        #sideMenu a {
-            padding: 20px 25px; text-decoration: none; font-size: 19px; 
-            color: white !important; display: block; 
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            font-weight: bold;
-        }
-
-        #menuBtn {
-            position: fixed; top: 15px; left: 15px; font-size: 28px; 
-            background: white; border: 1px solid #ddd; padding: 5px 15px; 
-            border-radius: 8px; cursor: pointer; z-index: 1001; color: var(--fts-red);
-        }
-
-        .logo { max-width: 240px; margin-bottom: 25px; }
-        .search-box { width: 90%; max-width: 450px; text-align: center; }
+        /* SIDEBAR */
+        #sideMenu { height: 100%; width: 0; position: fixed; z-index: 999; top: 0; left: 0; background-color: var(--fts-red); overflow-x: hidden; transition: 0.3s; padding-top: 60px; box-shadow: 2px 0 10px rgba(0,0,0,0.2); }
+        #sideMenu a, .drop-btn { padding: 15px 25px; text-decoration: none; font-size: 18px; color: white !important; display: block; border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: bold; cursor: pointer; background: none; border: none; width: 100%; text-align: left; box-sizing: border-box; }
+        .drop-container { display: none; background: rgba(0,0,0,0.2); }
+        .drop-container a { padding-left: 45px !important; font-weight: normal !important; font-size: 16px !important; border-bottom: none !important; }
         
-        input { 
-            width: 100%; padding: 15px; font-size: 18px; 
-            border-radius: 12px; border: 1px solid #ccc; box-sizing: border-box;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05); outline: none;
-            text-align: center;
-        }
-
-        #status { color: #888; font-size: 14px; font-style: italic; margin-top: 10px; }
-
-        #emailAllBtn {
-            display: none; background: var(--fts-red); color: white; border: none;
-            padding: 12px 25px; border-radius: 8px; font-size: 14px; margin-top: 10px;
-            cursor: pointer; font-weight: bold; text-transform: uppercase;
-        }
-
-        .result-item { 
-            width: 90%; max-width: 450px; background: #f4f4f4; 
-            margin-top: 12px; padding: 18px; border-radius: 12px; 
-            border-left: 6px solid var(--fts-red); text-align: left;
-            line-height: 1.7; box-sizing: border-box;
-        }
-        .result-item a { text-decoration: underline; font-weight: bold; }
+        #menuBtn { position: fixed; top: 15px; left: 15px; font-size: 26px; background: white; border: 1px solid #ddd; padding: 4px 12px; border-radius: 8px; cursor: pointer; z-index: 1000; color: var(--fts-red); line-height: 1; }
+        
+        .logo { max-width: 220px; margin-bottom: 20px; }
+        .search-box { width: 90%; max-width: 420px; text-align: center; }
+        input { width: 100%; padding: 14px; font-size: 18px; border-radius: 12px; border: 1px solid #ccc; box-sizing: border-box; text-align: center; outline: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        #status { color: #888; font-size: 14px; margin-top: 10px; font-style: italic; }
+        
+        #emailAllBtn { display: none; background: var(--fts-red); color: white; border: none; padding: 14px; border-radius: 10px; font-size: 14px; margin-top: 12px; cursor: pointer; width: 100%; font-weight: bold; text-transform: uppercase; }
+        
+        #results { width: 95%; max-width: 420px; margin-top: 10px; }
+        .result-item { background: #f9f9f9; margin-top: 12px; padding: 18px; border-radius: 12px; border-left: 6px solid var(--fts-red); text-align: left; line-height: 1.8; box-sizing: border-box; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+        .result-item a { text-decoration: underline; font-weight: bold; display: inline-block; margin: 2px 0; }
     </style>
 </head>
 <body>
@@ -71,35 +33,63 @@
     <div id="menuBtn" onclick="openNav()">☰</div>
 
     <div id="sideMenu">
-        <div style="padding: 10px 25px; color: rgba(255,255,255,0.6); font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Company Portals</div>
-        
-        <a href="https://docs.google.com/spreadsheets/d/YOUR_RATE_CARD_ID_HERE/preview" target="_blank">Rate Card</a>
-        
+        <a href="https://docs.google.com/spreadsheets/d/YOUR_ID/preview" target="_blank">Rate Card</a>
         <a href="https://www.webfleet.com/en_gb/webfleet/products/webfleet/" target="_blank">Webfleet Login</a>
         <a href="https://palletforce.net/Login.aspx" target="_blank">PalletForce</a>
         <a href="https://haulageexchange.co.uk/" target="_blank">Haulage Exchange</a>
         <a href="https://www.frosttransportsolutions.co.uk/" target="_blank">Company Website</a>
+
+        <div class="drop-btn" onclick="toggleDrop()">Driver Contacts ▾</div>
+        <div id="driverList" class="drop-container">
+            <a href="tel:01623655583">Andy West</a>
+            <a href="tel:01623655583">Barrie Ashmore</a>
+            <a href="tel:01623655583">Callum Lee</a>
+            <a href="tel:07572124094">Dean Young</a>
+            <a href="tel:01623655583">Ian Bason</a>
+            <a href="tel:01623655583">Jan Zackl</a>
+            <a href="tel:07306256854">John Hulbert</a>
+            <a href="tel:01623655583">Josh Harrison</a>
+            <a href="tel:01623655583">Lee Woodcock</a>
+            <a href="tel:01623655583">Marc Wickham</a>
+            <a href="tel:07481306987">Martin Basford</a>
+            <a href="tel:01623655583">Michael Moss</a>
+            <a href="tel:01623655583">Neil Woods</a>
+            <a href="tel:01623655583">Rhys Hill</a>
+            <a href="tel:07746509636">Ricardo Morais</a>
+            <a href="tel:01623655583">Richard Dickens</a>
+            <a href="tel:07961662346">Richard Robinson</a>
+            <a href="tel:01623655583">Richard Spence</a>
+            <a href="tel:07462886859">Roy Taylor</a>
+            <a href="tel:01623655583">Stuart Sleigh</a>
+            <a href="tel:07546702780">Svajunas Butnorius</a>
+            <a href="tel:01623655583">Thomas Broomhead</a>
+            <a href="tel:01623655583">Tsz Chung Cheung</a>
+        </div>
         
-        <div onclick="closeNav()" style="padding: 30px 25px; color: white; cursor: pointer; font-size: 16px; text-decoration: underline; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 10px;">✕ Close Menu</div>
+        <div onclick="closeNav()" style="padding: 25px; color: white; cursor: pointer; text-align: center; text-decoration: underline; font-size: 14px; opacity: 0.8;">✕ Close Menu</div>
     </div>
 
     <img src="logo.png" class="logo" alt="Frost Haulage">
     
     <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Search Directory..." autocomplete="off" oninput="doSearch()">
-        <div id="status">Connecting...</div>
+        <input type="text" id="searchInput" placeholder="Start typing to search..." oninput="doSearch()">
+        <div id="status">Connecting to Directory...</div>
         <button id="emailAllBtn" onclick="emailResults()">Email All Results</button>
     </div>
 
     <div id="results"></div>
 
     <script>
+        var allData = [];
+        var currentEmails = [];
+        const SHEET_ID = '1WDctuQ1oragZhv6GfBCl56Wk6czlmtKD-KFDR6Bv0_g';
+
         function openNav() { document.getElementById("sideMenu").style.width = "280px"; }
         function closeNav() { document.getElementById("sideMenu").style.width = "0"; }
-
-        const SHEET_ID = '1WDctuQ1oragZhv6GfBCl56Wk6czlmtKD-KFDR6Bv0_g';
-        var allData = [];
-        var currentEmailList = [];
+        function toggleDrop() {
+            var d = document.getElementById("driverList");
+            d.style.display = (d.style.display === "block") ? "none" : "block";
+        }
 
         window.handleResponse = function(response) {
             if(response && response.table) {
@@ -109,72 +99,68 @@
         };
 
         function doSearch() {
-            var query = document.getElementById('searchInput').value.toLowerCase();
-            var resultsDiv = document.getElementById('results');
-            var emailBtn = document.getElementById('emailAllBtn');
+            var q = document.getElementById('searchInput').value.toLowerCase();
+            var resDiv = document.getElementById('results');
+            var eBtn = document.getElementById('emailAllBtn');
             var statusDiv = document.getElementById('status');
             
-            resultsDiv.innerHTML = "";
-            currentEmailList = [];
-            
-            if (query.length < 2) {
-                emailBtn.style.display = "none";
+            resDiv.innerHTML = "";
+            currentEmails = [];
+
+            if (q.length < 2) { 
+                eBtn.style.display = "none"; 
                 statusDiv.innerHTML = "System Ready";
-                return;
+                return; 
             }
 
-            var foundCount = 0;
+            var matches = 0;
             for (var i = 0; i < allData.length; i++) {
                 var row = allData[i];
-                if (!row.c) continue;
+                if (!row || !row.c) continue;
                 
-                var cells = [];
-                for (var j = 0; j < row.c.length; j++) {
-                    var val = (row.c[j] && (row.c[j].f || row.c[j].v)) ? row.c[j].f || row.c[j].v : "";
-                    cells.push(val.toString());
-                }
+                var cells = row.c.map(function(c) {
+                    return (c && (c.f || c.v)) ? (c.f || c.v).toString() : "";
+                });
                 
                 var rowText = cells.join(" ").toLowerCase();
 
-                if (rowText.indexOf(query) > -1) {
-                    foundCount++;
+                if (rowText.indexOf(q) > -1) {
+                    matches++;
                     var div = document.createElement('div');
                     div.className = "result-item";
+                    var html = "";
                     
-                    var htmlContent = "";
-                    for (var k = 0; k < cells.length; k++) {
-                        var clean = cells[k].trim();
-                        if (!clean) continue;
+                    cells.forEach(function(val) {
+                        var clean = val.trim();
+                        if (!clean) return;
 
                         if (clean.indexOf('@') > -1) {
-                            if (currentEmailList.indexOf(clean) === -1) currentEmailList.push(clean);
-                            htmlContent += '<a href="mailto:' + clean + '" style="color:var(--outlook-blue);">✉️ ' + clean + '</a><br>';
-                        } else if (/^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i.test(clean)) {
-                            htmlContent += '<a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(clean) + '" target="_blank" style="color:var(--maps-green);">📍 ' + clean + '</a><br>';
-                        } else if (clean.length > 8 && /^[0-9+\s()/-]+$/.test(clean)) {
-                            htmlContent += '<a href="tel:' + clean.replace(/\s+/g, '') + '" style="color:var(--fts-red);">📞 ' + clean + '</a><br>';
+                            if (currentEmails.indexOf(clean) === -1) currentEmails.push(clean);
+                            html += '<a href="mailto:' + clean + '" style="color:var(--outlook-blue);">✉️ ' + clean + '</a><br>';
+                        } else if (clean.length > 8 && /^[0-9\s()+-]+$/.test(clean)) {
+                            html += '<a href="tel:' + clean.replace(/\s+/g,'') + '" style="color:var(--fts-red);">📞 ' + clean + '</a><br>';
+                        } else if (/[A-Z]{1,2}[0-9][A-Z0-9]? [0-9][A-Z]{2}/i.test(clean)) {
+                            html += '<a href="https://www.google.com/maps/search/' + encodeURIComponent(clean) + '" target="_blank" style="color:var(--maps-green);">📍 ' + clean + '</a><br>';
                         } else {
-                            htmlContent += '<span>' + clean + '</span><br>';
+                            html += '<span>' + clean + '</span><br>';
                         }
-                    }
-                    div.innerHTML = htmlContent;
-                    resultsDiv.appendChild(div);
+                    });
+                    div.innerHTML = html;
+                    resDiv.appendChild(div);
                 }
             }
             
-            statusDiv.innerHTML = foundCount > 0 ? foundCount + " match(es) found" : "No matches found";
-            emailBtn.style.display = (foundCount > 0 && currentEmailList.length > 0) ? "block" : "none";
+            statusDiv.innerHTML = matches + " match(es) found";
+            eBtn.style.display = (currentEmails.length > 0) ? "block" : "none";
         }
 
         function emailResults() {
-            if (currentEmailList.length === 0) return;
-            window.location.href = "mailto:" + currentEmailList.join(';') + "?subject=Frost Haulage Correspondence";
+            window.location.href = "mailto:" + currentEmails.join(';') + "?subject=Frost Haulage Correspondence";
         }
 
         var script = document.createElement('script');
         script.src = "https://docs.google.com/spreadsheets/d/" + SHEET_ID + "/gviz/tq?tqx=responseHandler:handleResponse";
         document.body.appendChild(script);
     </script>
-
 </body>
 </html>
