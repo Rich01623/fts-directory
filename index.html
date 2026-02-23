@@ -5,27 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Frost Haulage Directory</title>
     <style>
-        :root { --fts-red: #E62411; --maps-green: #28a745; --outlook-blue: #0078d4; }
-        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #ffffff; display: flex; flex-direction: column; align-items: center; padding-top: 70px; }
+        :root { --fts-red: #E62411; --maps-green: #28a745; --outlook-blue: #0078d4; --wa-green: #25D366; }
+        body { margin: 0; font-family: -apple-system, system-ui, sans-serif; background: #ffffff; display: flex; flex-direction: column; align-items: center; padding-top: 70px; }
         
-        /* SIDEBAR */
-        #sideMenu { height: 100%; width: 0; position: fixed; z-index: 999; top: 0; left: 0; background-color: var(--fts-red); overflow-x: hidden; transition: 0.3s; padding-top: 60px; box-shadow: 2px 0 10px rgba(0,0,0,0.2); }
-        #sideMenu a, .drop-btn { padding: 15px 25px; text-decoration: none; font-size: 18px; color: white !important; display: block; border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: bold; cursor: pointer; background: none; border: none; width: 100%; text-align: left; box-sizing: border-box; }
+        /* SIDEBAR - CONDENSED */
+        #sideMenu { height: 100%; width: 0; position: fixed; z-index: 9999; top: 0; left: 0; background-color: var(--fts-red); overflow-x: hidden; transition: 0.3s; padding-top: 50px; box-shadow: 5px 0 15px rgba(0,0,0,0.3); }
+        #sideMenu a, .drop-btn { padding: 10px 20px; text-decoration: none; font-size: 15px; color: white !important; display: block; border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 600; cursor: pointer; background: none; border: none; width: 100%; text-align: left; box-sizing: border-box; line-height: 1.2; }
         .drop-container { display: none; background: rgba(0,0,0,0.2); }
-        .drop-container a { padding-left: 45px !important; font-weight: normal !important; font-size: 16px !important; border-bottom: none !important; }
         
+        /* Side Menu Driver Buttons */
+        .driver-row { display: flex; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .driver-name { flex-grow: 1; padding: 10px 20px; color: white; text-decoration: none; font-size: 14px; }
+        .wa-side-btn { padding: 10px; color: #fff; background: rgba(255,255,255,0.1); text-decoration: none; font-size: 18px; border-left: 1px solid rgba(255,255,255,0.1); }
+
         #menuBtn { position: fixed; top: 15px; left: 15px; font-size: 26px; background: white; border: 1px solid #ddd; padding: 4px 12px; border-radius: 8px; cursor: pointer; z-index: 1000; color: var(--fts-red); line-height: 1; }
         
-        .logo { max-width: 220px; margin-bottom: 20px; }
+        .logo { max-width: 200px; margin-bottom: 20px; }
         .search-box { width: 90%; max-width: 420px; text-align: center; }
-        input { width: 100%; padding: 14px; font-size: 18px; border-radius: 12px; border: 1px solid #ccc; box-sizing: border-box; text-align: center; outline: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        input { width: 100%; padding: 14px; font-size: 18px; border-radius: 12px; border: 1px solid #ccc; box-sizing: border-box; text-align: center; outline: none; }
         #status { color: #888; font-size: 14px; margin-top: 10px; font-style: italic; }
         
-        #emailAllBtn { display: none; background: var(--fts-red); color: white; border: none; padding: 14px; border-radius: 10px; font-size: 14px; margin-top: 12px; cursor: pointer; width: 100%; font-weight: bold; text-transform: uppercase; }
+        #emailAllBtn { display: none; background: var(--fts-red); color: white; border: none; padding: 14px; border-radius: 10px; font-size: 14px; margin-top: 12px; cursor: pointer; width: 100%; font-weight: bold; }
         
-        #results { width: 95%; max-width: 420px; margin-top: 10px; }
-        .result-item { background: #f9f9f9; margin-top: 12px; padding: 18px; border-radius: 12px; border-left: 6px solid var(--fts-red); text-align: left; line-height: 1.8; box-sizing: border-box; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
-        .result-item a { text-decoration: underline; font-weight: bold; display: inline-block; margin: 2px 0; }
+        .result-item { width: 95%; max-width: 420px; background: #f9f9f9; margin-top: 12px; padding: 18px; border-radius: 12px; border-left: 6px solid var(--fts-red); text-align: left; line-height: 1.8; box-sizing: border-box; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+        .btn-link { text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 6px; margin: 4px 4px 4px 0; font-size: 14px; }
+        .wa-btn { background: #e7f9ee; color: var(--wa-green); border: 1px solid var(--wa-green); }
+        .call-btn { background: #ffeeed; color: var(--fts-red); border: 1px solid var(--fts-red); }
+        .result-item span { display: block; font-weight: normal; color: #333; }
     </style>
 </head>
 <body>
@@ -33,6 +39,8 @@
     <div id="menuBtn" onclick="openNav()">☰</div>
 
     <div id="sideMenu">
+        <a href="#" target="_blank">Vehicle Maintenance Calendar</a>
+        <a href="#" target="_blank">Holiday Planner</a>
         <a href="https://docs.google.com/spreadsheets/d/YOUR_ID/preview" target="_blank">Rate Card</a>
         <a href="https://www.webfleet.com/en_gb/webfleet/products/webfleet/" target="_blank">Webfleet Login</a>
         <a href="https://palletforce.net/Login.aspx" target="_blank">PalletForce</a>
@@ -41,39 +49,38 @@
 
         <div class="drop-btn" onclick="toggleDrop()">Driver Contacts ▾</div>
         <div id="driverList" class="drop-container">
-            <a href="tel:01623655583">Andy West</a>
-            <a href="tel:01623655583">Barrie Ashmore</a>
-            <a href="tel:01623655583">Callum Lee</a>
-            <a href="tel:0162365583">Dean Young</a>
-            <a href="tel:01623655583">Ian Bason</a>
-            <a href="tel:0162365583">Jan Zackl</a>
-            <a href="tel:01623655583">John Hulbert</a>
-            <a href="tel:01623655583">Josh Harrison</a>
-            <a href="tel:01623655583">Lee Woodcock</a>
-            <a href="tel:01623655583">Marc Wickham</a>
-            <a href="tel:01623655583">Martin Basford</a>
-            <a href="tel:01623655583">Michael Moss</a>
-            <a href="tel:01623655583">Neil Woods</a>
-            <a href="tel:01623655583">Rhys Hill</a>
-            <a href="tel:01623655583">Ricardo Morais</a>
-            <a href="tel:01623655583">Richard Dickens</a>
-            <a href="tel:01623655583">Richard Robinson</a>
-            <a href="tel:01623655583">Richard Spence</a>
-            <a href="tel:01623655583">Roy Taylor</a>
-            <a href="tel:01623655583">Stuart Sleigh</a>
-            <a href="tel:01623655583">Svajunas Butnorius</a>
-            <a href="tel:01623655583">Thomas Broomhead</a>
-            <a href="tel:01623655583">Tsz Chung Cheung</a>
+            <div class="driver-row"><a href="tel:01623655583" class="driver-name">Andy West</a><a href="https://wa.me/441623655583" class="wa-side-btn">💬</a></div>
+            <div class="driver-row"><a href="tel:01623655583" class="driver-name">Barrie Ashmore</a><a href="https://wa.me/441623655583" class="wa-side-btn">💬</a></div>
+            <div class="driver-row"><a href="tel:01623655583" class="driver-name">Callum Lee</a><a href="https://wa.me/441623655583" class="wa-side-btn">💬</a></div>
+            <div class="driver-row"><a href="tel:0162365583" class="driver-name">Dean Young</a><a href="https://wa.me/44162365583" class="wa-side-btn">💬</a></div>
+            <div class="driver-row"><a href="tel:01623655583" class="driver-name">Ian Bason</a><a href="https://wa.me/441623655583" class="wa-side-btn">💬</a></div>
+            <div class="driver-row"><a href="tel:0162365583" class="driver-name">Jan Zackl</a><a href="https://wa.me/441623655583" class="wa-side-btn">💬</a></div>
+            <div class="driver-row"><a href="tel:01623655583" class="driver-name">John Hulbert</a><a href="https://wa.me/441623655583" class="wa-side-btn">💬</a></div>
+            <div class="driver-row"><a href="tel:01623655583" class="driver-name">Josh Harrison</a><a href="https://wa.me/441623655583" class="wa-side-btn">💬</a></div>
+            <div class="driver-row"><a href="tel:01623655583" class="driver-name">Lee Woodcock</a><a href="https://wa.me/441623655583" class="wa-side-btn">💬</a></div>
+            <div class="driver-row"><a href="tel:01623655583" class="driver-name">Marc Wickham</a><a href="https://wa.me/441623655583" class="wa-side-btn">💬</a></div>
+            <div class="driver-row"><a href="tel:01623655583" class="driver-name">Martin Basford</a><a href="https://wa.me/441623655583" class="wa-side-btn">💬</a></div>
+            <div class="driver-row"><a href="tel:01623655583" class="driver-name">Michael Moss</a><a href="https://wa.me/441623655583" class="wa-side-btn">💬</a></div>
+            <div class="driver-row"><a href="tel:01623655583" class="driver-name">Neil Woods</a><a href="https://wa.me/441623655583" class="wa-side-btn">💬</a></div>
+            <div class="driver-row"><a href="tel:01623655583" class="driver-name">Rhys Hill</a><a href="https://wa.me/441623655583" class="wa-side-btn">💬</a></div>
+            <div class="driver-row"><a href="tel:01623655583" class="driver-name">Ricardo Morais</a><a href="https://wa.me/441623655583" class="wa-side-btn">💬</a></div>
+            <div class="driver-row"><a href="tel:01623655583" class="driver-name">Richard Dickens</a><a href="https://wa.me/441623655583" class="wa-side-btn">💬</a></div>
+            <div class="driver-row"><a href="tel:01623655583" class="driver-name">Richard Robinson</a><a href="https://wa.me/441623655583" class="wa-side-btn">💬</a></div>
+            <div class="driver-row"><a href="tel:01623655583" class="driver-name">Richard Spence</a><a href="https://wa.me/441623655583" class="wa-side-btn">💬</a></div>
+            <div class="driver-row"><a href="tel:01623655583" class="driver-name">Roy Taylor</a><a href="https://wa.me/441623655583" class="wa-side-btn">💬</a></div>
+            <div class="driver-row"><a href="tel:01623655583" class="driver-name">Stuart Sleigh</a><a href="https://wa.me/441623655583" class="wa-side-btn">💬</a></div>
+            <div class="driver-row"><a href="tel:01623655583" class="driver-name">Svajunas Butnorius</a><a href="https://wa.me/441623655583" class="wa-side-btn">💬</a></div>
+            <div class="driver-row"><a href="tel:01623655583" class="driver-name">Thomas Broomhead</a><a href="https://wa.me/441623655583" class="wa-side-btn">💬</a></div>
+            <div class="driver-row"><a href="tel:01623655583" class="driver-name">Tsz Chung Cheung</a><a href="https://wa.me/441623655583" class="wa-side-btn">💬</a></div>
         </div>
-        
-        <div onclick="closeNav()" style="padding: 25px; color: white; cursor: pointer; text-align: center; text-decoration: underline; font-size: 14px; opacity: 0.8;">✕ Close Menu</div>
+        <div onclick="closeNav()" style="padding: 20px; color: white; cursor: pointer; text-align: center; text-decoration: underline; font-size: 13px;">✕ Close Menu</div>
     </div>
 
     <img src="logo.png" class="logo" alt="Frost Haulage">
     
     <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Start typing to search..." oninput="doSearch()">
-        <div id="status">Connecting to Directory...</div>
+        <input type="text" id="searchInput" placeholder="Search directory..." oninput="doSearch()">
+        <div id="status">Connecting...</div>
         <button id="emailAllBtn" onclick="emailResults()">Email All Results</button>
     </div>
 
@@ -84,8 +91,11 @@
         var currentEmails = [];
         const SHEET_ID = '1WDctuQ1oragZhv6GfBCl56Wk6czlmtKD-KFDR6Bv0_g';
 
-        function openNav() { document.getElementById("sideMenu").style.width = "280px"; }
-        function closeNav() { document.getElementById("sideMenu").style.width = "0"; }
+        function openNav() { document.getElementById("sideMenu").style.width = "260px"; }
+        function closeNav() { 
+            document.getElementById("sideMenu").style.width = "0"; 
+            document.getElementById("driverList").style.display = "none";
+        }
         function toggleDrop() {
             var d = document.getElementById("driverList");
             d.style.display = (d.style.display === "block") ? "none" : "block";
@@ -102,65 +112,51 @@
             var q = document.getElementById('searchInput').value.toLowerCase();
             var resDiv = document.getElementById('results');
             var eBtn = document.getElementById('emailAllBtn');
-            var statusDiv = document.getElementById('status');
-            
             resDiv.innerHTML = "";
             currentEmails = [];
 
-            if (q.length < 2) { 
-                eBtn.style.display = "none"; 
-                statusDiv.innerHTML = "System Ready";
-                return; 
-            }
+            if (q.length < 2) { eBtn.style.display = "none"; return; }
 
-            var matches = 0;
             for (var i = 0; i < allData.length; i++) {
                 var row = allData[i];
                 if (!row || !row.c) continue;
-                
-                var cells = row.c.map(function(c) {
-                    return (c && (c.f || c.v)) ? (c.f || c.v).toString() : "";
-                });
-                
+                var cells = row.c.map(function(c) { return (c && (c.f || c.v)) ? (c.f || c.v).toString() : ""; });
                 var rowText = cells.join(" ").toLowerCase();
 
                 if (rowText.indexOf(q) > -1) {
-                    matches++;
                     var div = document.createElement('div');
                     div.className = "result-item";
                     var html = "";
-                    
                     cells.forEach(function(val) {
                         var clean = val.trim();
                         if (!clean) return;
-
+                        
                         if (clean.indexOf('@') > -1) {
                             if (currentEmails.indexOf(clean) === -1) currentEmails.push(clean);
-                            html += '<a href="mailto:' + clean + '" style="color:var(--outlook-blue);">✉️ ' + clean + '</a><br>';
+                            html += '<a href="mailto:' + clean + '" class="btn-link" style="color:var(--outlook-blue); border: 1px solid var(--outlook-blue);">✉️ Email</a><br>';
                         } else if (clean.length > 8 && /^[0-9\s()+-]+$/.test(clean)) {
-                            html += '<a href="tel:' + clean.replace(/\s+/g,'') + '" style="color:var(--fts-red);">📞 ' + clean + '</a><br>';
+                            var rawNum = clean.replace(/\s+/g, '').replace(/^\+/, '');
+                            var waNum = rawNum.startsWith('0') ? '44' + rawNum.substring(1) : rawNum;
+                            html += '<a href="tel:' + rawNum + '" class="btn-link call-btn">📞 Call</a>';
+                            html += '<a href="https://wa.me/' + waNum + '" class="btn-link wa-btn" target="_blank">💬 WhatsApp</a><br>';
                         } else if (/[A-Z]{1,2}[0-9][A-Z0-9]? [0-9][A-Z]{2}/i.test(clean)) {
-                            html += '<a href="https://www.google.com/maps/search/' + encodeURIComponent(clean) + '" target="_blank" style="color:var(--maps-green);">📍 ' + clean + '</a><br>';
+                            html += '<a href="https://www.google.com/maps/search/' + encodeURIComponent(clean) + '" target="_blank" class="btn-link" style="color:var(--maps-green); border: 1px solid var(--maps-green);">📍 ' + clean + '</a><br>';
                         } else {
-                            html += '<span>' + clean + '</span><br>';
+                            html += '<span>' + clean + '</span>';
                         }
                     });
                     div.innerHTML = html;
                     resDiv.appendChild(div);
                 }
             }
-            
-            statusDiv.innerHTML = matches + " match(es) found";
             eBtn.style.display = (currentEmails.length > 0) ? "block" : "none";
         }
 
-        function emailResults() {
-            window.location.href = "mailto:" + currentEmails.join(';') + "?subject=Frost Haulage Correspondence";
-        }
-
-        var script = document.createElement('script');
-        script.src = "https://docs.google.com/spreadsheets/d/" + SHEET_ID + "/gviz/tq?tqx=responseHandler:handleResponse";
-        document.body.appendChild(script);
+        window.onload = function() {
+            var script = document.createElement('script');
+            script.src = "https://docs.google.com/spreadsheets/d/" + SHEET_ID + "/gviz/tq?tqx=responseHandler:handleResponse";
+            document.body.appendChild(script);
+        };
     </script>
 </body>
 </html>
