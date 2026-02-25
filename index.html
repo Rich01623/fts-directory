@@ -8,12 +8,12 @@
         :root { --fts-red: #E62411; --maps-green: #28a745; --outlook-blue: #0078d4; --wa-green: #25D366; }
         body { margin: 0; font-family: -apple-system, system-ui, sans-serif; background: #ffffff; display: flex; flex-direction: column; align-items: center; padding-top: 70px; }
         
-        /* SIDEBAR - CONDENSED */
+        /* SIDEBAR */
         #sideMenu { height: 100%; width: 0; position: fixed; z-index: 9999; top: 0; left: 0; background-color: var(--fts-red); overflow-x: hidden; transition: 0.3s; padding-top: 50px; box-shadow: 5px 0 15px rgba(0,0,0,0.3); }
         #sideMenu a, .drop-btn { padding: 10px 20px; text-decoration: none; font-size: 15px; color: white !important; display: block; border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 600; cursor: pointer; background: none; border: none; width: 100%; text-align: left; box-sizing: border-box; line-height: 1.2; }
         .drop-container { display: none; background: rgba(0,0,0,0.2); }
         
-        /* Side Menu Driver Buttons */
+        /* Driver Rows */
         .driver-row { display: flex; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .driver-name { flex-grow: 1; padding: 10px 20px; color: white; text-decoration: none; font-size: 14px; }
         .wa-side-btn { padding: 10px; color: #fff; background: rgba(255,255,255,0.1); text-decoration: none; font-size: 18px; border-left: 1px solid rgba(255,255,255,0.1); }
@@ -39,9 +39,9 @@
     <div id="menuBtn" onclick="openNav()">☰</div>
 
     <div id="sideMenu">
-        <a href="https://docs.google.com/spreadsheets/d/1nmFkiesEvKW4LfL7q-VH5_WlM67_x0aG5DkTvR5jESE/edit?usp=sharing" target="_blank">Vehicle Maintenance Calendar</a>
-        <a href="https://docs.google.com/spreadsheets/d/1nmFkiesEvKW4LfL7q-VH5_WlM67_x0aG5DkTvR5jESE/edit?usp=sharing" target="_blank">Holiday Planner</a>
-        <a href="https://docs.google.com/spreadsheets/d/YOUR_ID/preview" target="_blank">Rate Card</a>
+        <a href="https://docs.google.com/spreadsheets/d/1nmFkiesEvKW4LfL7q-VH5_WlM67_x0aG5DkTvR5jESE/preview?rm=minimal" target="_blank">Vehicle Maintenance Calendar</a>
+        <a href="https://docs.google.com/spreadsheets/d/1nZvQOplnru5hUCy4VRmm7bVHOwuJyzvV4CD3DyDGmO0/preview?rm=minimal" target="_blank">Trailer Locator</a> 
+        <a href="https://docs.google.com/spreadsheets/d/1tDW99JVE3BA7tKytZJGXA8EmkFDK1JHpiemg_Azxm6Q/preview?rm=minimal" target="_blank">Holiday Planner</a>
         <a href="https://www.webfleet.com/en_gb/webfleet/products/webfleet/" target="_blank">Webfleet Login</a>
         <a href="https://palletforce.net/Login.aspx" target="_blank">PalletForce</a>
         <a href="https://haulageexchange.co.uk/" target="_blank">Haulage Exchange</a>
@@ -54,7 +54,7 @@
             <div class="driver-row"><a href="tel:07701238573" class="driver-name">Callum Lee</a><a href="https://wa.me/447701238573" class="wa-side-btn">💬</a></div>
             <div class="driver-row"><a href="tel:07572124094" class="driver-name">Dean Young</a><a href="https://wa.me/447572124094" class="wa-side-btn">💬</a></div>
             <div class="driver-row"><a href="tel:07701238567" class="driver-name">Ian Bason</a><a href="https://wa.me/447701238567" class="wa-side-btn">💬</a></div>
-            <div class="driver-row"><a href="tel:01623655583" class="driver-name">Jan Zackl</a><a href="https://wa.me/441623655583" class="wa-side-btn">💬</a></div>
+            <div class="driver-row"><a href="tel:01623655583" class="driver-name">Jan Zackl</a><a href="https://wa.me/4471623655583" class="wa-side-btn">💬</a></div>
             <div class="driver-row"><a href="tel:07306256854" class="driver-name">John Hulbert</a><a href="https://wa.me/447306256854" class="wa-side-btn">💬</a></div>
             <div class="driver-row"><a href="tel:07701238574" class="driver-name">Josh Harrison</a><a href="https://wa.me/447701238574" class="wa-side-btn">💬</a></div>
             <div class="driver-row"><a href="tel:07701238577" class="driver-name">Lee Woodcock</a><a href="https://wa.me/447701238577" class="wa-side-btn">💬</a></div>
@@ -120,7 +120,9 @@
             for (var i = 0; i < allData.length; i++) {
                 var row = allData[i];
                 if (!row || !row.c) continue;
-                var cells = row.c.map(function(c) { return (c && (c.f || c.v)) ? (c.f || c.v).toString() : ""; });
+                var cells = row.c.map(function(c) { 
+                    return (c && (c.f || c.v)) ? (c.f || c.v).toString() : ""; 
+                });
                 var rowText = cells.join(" ").toLowerCase();
 
                 if (rowText.indexOf(q) > -1) {
@@ -140,7 +142,7 @@
                             html += '<a href="tel:' + rawNum + '" class="btn-link call-btn">📞 Call</a>';
                             html += '<a href="https://wa.me/' + waNum + '" class="btn-link wa-btn" target="_blank">💬 WhatsApp</a><br>';
                         } else if (/[A-Z]{1,2}[0-9][A-Z0-9]? [0-9][A-Z]{2}/i.test(clean)) {
-                            html += '<a href="https://www.google.com/maps/search/' + encodeURIComponent(clean) + '" target="_blank" class="btn-link" style="color:var(--maps-green); border: 1px solid var(--maps-green);">📍 ' + clean + '</a><br>';
+                            html += '<a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(clean) + '" target="_blank" class="btn-link" style="color:var(--maps-green); border: 1px solid var(--maps-green);">📍 ' + clean + '</a><br>';
                         } else {
                             html += '<span>' + clean + '</span>';
                         }
@@ -160,5 +162,3 @@
     </script>
 </body>
 </html>
-
-
