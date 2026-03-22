@@ -7,43 +7,56 @@
     <style>
         :root { --fts-red: #E62411; --maps-green: #28a745; --outlook-blue: #0078d4; --wa-green: #25D366; }
         
-        /* THE BACKGROUND FIX */
+        /* BACKGROUND IMAGE SETUP */
         body::before {
             content: "";
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            /* Make sure the filename below matches your image file exactly */
             background-image: url('Pic-35-1.jpg'); 
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center center;
-            opacity: 0.2; /* Adjusted from 0.15 to be slightly more visible */
+            opacity: 0.3; /* Increased slightly so you can see it better */
             z-index: -1;
         }
 
-        body { margin: 0; font-family: -apple-system, system-ui, sans-serif; background: #ffffff; display: flex; flex-direction: column; align-items: center; padding-top: 70px; }
+        body { 
+            margin: 0; 
+            font-family: -apple-system, system-ui, sans-serif; 
+            background-color: transparent; /* REMOVED THE WHITE BOX HERE */
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding-top: 70px; 
+        }
         
         /* SIDEBAR */
         #sideMenu { height: 100%; width: 0; position: fixed; z-index: 9999; top: 0; left: 0; background-color: var(--fts-red); overflow-x: hidden; transition: 0.3s; padding-top: 50px; box-shadow: 5px 0 15px rgba(0,0,0,0.3); }
         #sideMenu a, .drop-btn { padding: 10px 20px; text-decoration: none; font-size: 15px; color: white !important; display: block; border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 600; cursor: pointer; background: none; border: none; width: 100%; text-align: left; box-sizing: border-box; line-height: 1.2; }
         .drop-container { display: none; background: rgba(0,0,0,0.2); }
         
-        /* Driver Rows */
         .driver-row { display: flex; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .driver-name { flex-grow: 1; padding: 10px 20px; color: white; text-decoration: none; font-size: 14px; }
         .wa-side-btn { padding: 10px; color: #fff; background: rgba(255,255,255,0.1); text-decoration: none; font-size: 18px; border-left: 1px solid rgba(255,255,255,0.1); }
 
         #menuBtn { position: fixed; top: 15px; left: 15px; font-size: 26px; background: white; border: 1px solid #ddd; padding: 4px 12px; border-radius: 8px; cursor: pointer; z-index: 1000; color: var(--fts-red); line-height: 1; }
         
-        .logo { max-width: 200px; margin-bottom: 20px; }
+        /* LOGO FIX */
+        .logo { 
+            max-width: 200px; 
+            margin-bottom: 20px; 
+            background: transparent !important; /* Forces transparency */
+            mix-blend-mode: multiply; /* Optional: helps remove stray white pixels if the PNG isn't perfect */
+        }
+
         .search-box { width: 90%; max-width: 420px; text-align: center; }
-        input { width: 100%; padding: 14px; font-size: 18px; border-radius: 12px; border: 1px solid #ccc; box-sizing: border-box; text-align: center; outline: none; }
-        #status { color: #888; font-size: 14px; margin-top: 10px; font-style: italic; }
+        input { width: 100%; padding: 14px; font-size: 18px; border-radius: 12px; border: 1px solid #ccc; box-sizing: border-box; text-align: center; outline: none; background: rgba(255,255,255,0.9); }
+        #status { color: #444; font-size: 14px; margin-top: 10px; font-style: italic; font-weight: bold; }
         
         #emailAllBtn { display: none; background: var(--fts-red); color: white; border: none; padding: 14px; border-radius: 10px; font-size: 14px; margin-top: 12px; cursor: pointer; width: 100%; font-weight: bold; }
         
-        .result-item { width: 95%; max-width: 420px; background: rgba(249, 249, 249, 0.9); margin-top: 12px; padding: 18px; border-radius: 12px; border-left: 6px solid var(--fts-red); text-align: left; line-height: 1.8; box-sizing: border-box; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+        .result-item { width: 95%; max-width: 420px; background: rgba(255, 255, 255, 0.9); margin-top: 12px; padding: 18px; border-radius: 12px; border-left: 6px solid var(--fts-red); text-align: left; line-height: 1.8; box-sizing: border-box; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
         .btn-link { text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 6px; margin: 4px 4px 4px 0; font-size: 14px; }
         .wa-btn { background: #e7f9ee; color: var(--wa-green); border: 1px solid var(--wa-green); }
         .call-btn { background: #ffeeed; color: var(--fts-red); border: 1px solid var(--fts-red); }
